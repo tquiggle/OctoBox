@@ -1,0 +1,8 @@
+[Unit]
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/octobox-boot-cfg.pl
+
+[Install]
+WantedBy=default.target

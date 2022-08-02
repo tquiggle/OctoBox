@@ -1,0 +1,9 @@
+# OctoBox startup configuration file
+#
+# Lines starting with a '#' are ignored
+# Do not remove the '#-' line below!
+#-
+
+SSID=mySSID
+password=mypassword
+#desktop=disabled
