@@ -60,7 +60,8 @@ calc_wt_size() {
 do_about() {
   whiptail  --title "OctoBox Software Configuration Tool (octobox-setup)" --msgbox "\
 This tool provides a straightforward way of doing initial
-configuration of the OctoBox.
+configuration of the OctoBox.  It can be run at any time
+to revise the configuration.
 
 Script version: $VERSION
 " 20 70 1
@@ -242,24 +243,6 @@ get_boot_splash() {
   fi
 }
 
-get_net_names() {
-  if grep -q "net.ifnames=0" $CMDLINE || \
-    ( [ "$(readlink -f /etc/systemd/network/99-default.link)" = "/dev/null" ] && \
-      [ "$(readlink -f /etc/systemd/network/73-usb-net-by-mac.link)" = "/dev/null" ] ); then
-    echo 1
-  else
-    echo 0
-  fi
-}
-
-do_update() {
-  apt-get update &&
-  apt-get install octobox-setup &&
-  printf "Sleeping 5 seconds before reloading octobox-setup\n" &&
-  sleep 5 &&
-  exec octobox-setup
-}
-
 list_wlan_interfaces() {
   for dir in /sys/class/net/*/wireless; do
     if [ -d "$dir" ]; then
@@ -419,6 +402,51 @@ do_internationalisation_menu() {
   fi
 }
 
+do_software_update() {
+  cd /tmp
+  git clone https://github.com/tquiggle/OctoBox
+  cd /tmp/OctoBox/slash
+
+  for src in $(find . -type f); do
+     dst=`echo $src | sed -e 's/^.//'`
+     echo "$src -> $dst"
+     install -C $src $dst
+  done
+}
+
+do_script_update() {
+  wget -O /tmp/octobox-setup https://raw.githubusercontent.com/tquiggle/OctoBox/main/slash/usr/bin/octobox-setup
+  if [ ! -f /tmp/octobox-setup ]; then
+    whiptail --msgbox "Unable to download latest octobox-setup" 20 60 1
+    return -1
+  fi
+  LATEST_VERSION=`grep "VERSION=" /tmp/octobox-setup | sed -e 's/VERSION=//'`
+  if [ "$VERSION" = "$LATEST_VERSION" ]; then
+    whiptail --msgbox "Latest octobox-setup already installed" 20 60 1
+    return 0
+  fi
+  install -C /tmp/octobox-setup /usr/bin/octobox-setup
+  whiptail --msgbox "octobox-setup upgraded to version $LATEST_VERSION" 20 60 1
+
+}
+
+do_update() {
+  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Update Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+      "U1 Script" "Update octobox-setup script" \
+      "U2 Software" "Update all octobox configuration software" \
+      3>&1 1>&2 2>&3)
+  if [ $? -eq 0 ]; then
+    case "$FUN" in
+      U1*)
+        do_script_update
+        ;;
+      U2*)
+        do_software_update
+        ;;
+    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+  fi
+}
+
 calc_wt_size
 while [ "$USER" = "root" ] || [ -z "$USER" ]; do
   if ! USER=$(whiptail --inputbox "octobox-setup could not determine the default user.\\n\\nWhat user should these settings apply to?" 20 60 pi 3>&1 1>&2 2>&3); then
@@ -426,12 +454,13 @@ while [ "$USER" = "root" ] || [ -z "$USER" ]; do
   fi
 done
 while true; do
-    FUN=$(whiptail --title "OctoBox Configuration Tool (octobox-config)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
+    FUN=$(whiptail --title "OctoBox Configuration Tool (octobox-setup)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
   "1 Configure Wireless" "Configure wireless settings" \
   "2 Desktop / Auto Login" "Select boot into desktop or to command line" \
   "3 Hostname" "Set network name for this computer" \
   "4 Location and Language" "Set location and language preferences" \
-  "5 About octobox-config" "Information about this configuration tool" \
+  "5 Update octobox-setup" "Update this tool to the latest version" \
+  "6 About octobox-setup" "Information about this configuration tool" \
   3>&1 1>&2 2>&3)
   RET=$?
   if [ $RET -eq 1 ]; then
@@ -442,7 +471,8 @@ while true; do
       2\ *) do_boot_behaviour ;;
       3\ *) do_hostname ;;
       4\ *) do_internationalisation_menu ;;
-      5\ *) do_about ;;
+      5\ *) do_update ;;
+      6\ *) do_about ;;
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   else
