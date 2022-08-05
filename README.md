@@ -15,8 +15,7 @@ an OctoBox from me on eBay here are instructions for configuring your system.
     2. [Wireless Network](#WirelessNetwork)
         1. [Using a Keyboard and Monitor](#KeyboardMonitor)
         2. [Configuring using the Desktop GUI](#DesktopGUI)
-    3. [Using a Thumb Drive](#ThumbDrive)
-
+        3. [Using a Thumb Drive](#ThumbDrive)
 3. [Configuring OctoPrint](#ConfiguringOctoPrint)
 4. [Other OctoBox Configuration](#OtherConfiguration)
      1. [Disabling the Graphical User Interface](#DisableGUI)
@@ -69,7 +68,7 @@ This will bring up a new window where you can select your wireless network and e
 
 <details>
   <summary>Click to expand!</summary>
-Alternately you can configure using the octobox-setup script from a termina.  To open a terminal, click on
+Alternately you can configure using the octobox-setup script from a terminal.  To open a terminal, click on
 the terminal icon in the dock on the left hand side of the screen:
 
 ![Terminal](screenshots/terminal.png)
@@ -90,6 +89,11 @@ You will be prompted for a password.  Use the password from the sticker on the b
 This will run the octobox-setup script.
 
 ![setup main](screenshots/setup-main.png)
+
+Navigate between options using arrow keys or the [tab] key.  Pressing [enter] will select the highlighted option.
+
+To configure Wireless, 
+
 </details>
 
 </details>
@@ -108,7 +112,8 @@ For remote access, you will need an ssh client.  For Windows, I recommend Putty.
 <details>
   <summary>Click to expand!</summary>
 
-octobox-config.txt
+The USB flash drive included with your system contains the file octobox-config.txt.  Insert the flash drive into your computer and edit octobox-config.txt with the
+text editor of your choice.
 
 ```
 # OctoBox startup configuration file
@@ -122,9 +127,7 @@ password=mypassword
 #desktop=disabled
 ```
 
-replace the string 'your_SSID' with the name of your wireless network, and 'your_password' with the password.  Save the file, eject the flash drive and move it to
-your OctoBox.  When the system boots, it scans for any attached USB drives or an SD card containing the file octobox-config.txt in the top level folder. If found, it
-applies the options specified in the configuration file.
+replace the string 'mySSID' with the name of your wireless network, and 'mypassword' with the password.  Save the file, eject the flash drive and insert it in any USB port on your OctoBox.  When the system boots, it scans for any attached USB drives (or an SD card) containing the file octobox-config.txt in the top level folder. If found, it applies the options specified in the configuration file.
 
 A word about the config file format.  The config parser tries to be agnostic about line terminators.  You can edit the file with Windows, Linux or MacOS.  As a result,
 it does NOT process the config file line-by-line.  If you have a '#' character followed by any amount of whitespace (including line terminators) preceding a config
@@ -154,23 +157,52 @@ password=mypassword
 
 # Configuring OctoPrint <a name="ConfiguringOctoPrint">
 
+Once your OctoBox is connected to your local network, from the browser of your choice enter the destination:
+
+```
+http://octoprint.local:5000
+```
+
+Ignore any warnings about an insecure connection.  OctoPrint isn’t configured for HTTPS.  The Setup Wizard should come up:
+
+![top](screenshots/wizard.png)
+
+Simply go through each step of the setup process.
+
+You will be asked to create an account.  This is separate from the user account (‘ocho’) used log into the OctoBox.  You are, however, free to use the same userid and password if you like.  Just realize that changing either password later won’t change the other.
+
+The commands to restart OctoPrint and shut down your OctoBox are pre-configured.  Just leave these settings and click Next.
+
+# Using OctoPrint <a name="UsingOctoPrint">
+
+Once you have completed the Setup Wizard, each time you visit octoprint.local:5000 you will get the main OctoPrint screen.  From there you can upload .gcode files and print them.  Do Not leave an SD card in your printer when using OctoPrint!  Doing so will dramatically slow down operations.
+
+![top](screenshots/octoprint.png)
 
 # Other OctoBox Configuration<a name="OtherConfiguration">
 
-## Disabling the Graphical User Interface
+## Disabling the Graphical User Interface<a name="DisableGUI">
+
+The graphical user interface uses few resources when enabled but not in use.  When actively printing via OctoPrint with the GUI enabled, the system load
+average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some
+resources by disabling the graphical user interface. This can be done from the octobox-setup script
+
+
+![top](screenshots/top.png)
+
+Running the OctoPrint client UI in Firefox on the OctoBox while printing utilizes much more resources.  The system load average increases to around 1.75
+and idle CPU drops to about 50%.
 
 # System Details <a name="SystemDetails">
 
-The system comes with Ubuntu 20.04 LTS with desktop support and the Cura slicer installed.  By default the graphical user interface is
-enabled.  If you connect a monitor, keyboard and mouse the system will boot into a desktop environment with the user 'ocho' logged in.
+The system comes with Ubuntu 22.04.1 LTS (Jammy Jellyfish) with desktop support and the Cura slicer installed.  By default the graphical user interface is
+enabled. The system will boot into a desktop environment with the user 'ocho' logged in.
 
-There are two accounts created by default.
+There are two accounts on the system.
 
-The user account is 'ocho' and the password is provided on a sticker attached to the bottom of the OctoBox. You can log into this account to run Cura or a web browser
-to connect to the local Octoprint service.
+The user account is 'ocho' and the password is provided on an index card in the box as well as a sticker attached to the bottom of the OctoBox. You can log into this account to run Cura or a web browser to connect to the local Octoprint service.  A desktop shortcut has been installed to launch Firefox with the local OctoPrint URL.
 
-The Octoprint service runs under the account 'octoprint'  This is a system account to run the service.  It does not have login or shell access. Sudo access is
-restricted to shutting down and rebooting the system.
+The Octoprint service runs under the account 'octoprint'  This is a system account to run the service.  It does not have login or shell access. Sudo access is restricted to shutting down and rebooting the system.
 
 Octoprint was installed in a python venv at /home/octoprint/venv
 
