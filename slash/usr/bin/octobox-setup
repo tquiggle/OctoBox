@@ -358,29 +358,6 @@ do_finish() {
   exit 0
 }
 
-# $1 = filename, $2 = key name
-get_json_string_val() {
-  sed -n -e "s/^[[:space:]]*\"$2\"[[:space:]]*:[[:space:]]*\"\(.*\)\"[[:space:]]*,$/\1/p" $1
-}
-
-is_uname_current() {
-  test -d "/lib/modules/$(uname -r)"
-}
-
-get_proxy() {
-  SCHEME="$1"
-  VAR_NAME="${SCHEME}_proxy"
-  if [ -f /etc/profile.d/proxy.sh ]; then
-    # shellcheck disable=SC1091
-    . /etc/profile.d/proxy.sh
-  fi
-  eval "echo \$$VAR_NAME"
-}
-
-nonint() {
-  "$@"
-}
-
 do_internationalisation_menu() {
   FUN=$(whiptail --title "Software Configuration Tool (raspi-config)" --menu "Localisation Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Back --ok-button Select \
     "L1 Locale" "Configure language and regional settings" \
@@ -430,6 +407,104 @@ do_script_update() {
 
 }
 
+do_framerate() {
+  FRAMERATE=`grep FRAMERATE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  RESOLUTION=`grep RESOLUTION  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  DEVICE=`grep DEVICE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+
+  FRAMERATE=$(whiptail --inputbox "Enter frame rate (current=$FRAMERATE)" 20 60 --title "Enter Framerate" 3>&1 1>&2 2>&3)
+  if [ $? -eq 0 ] && [ "$FRAMERATE" != "" ]; then
+
+    cat > /usr/local/etc/mjpg_streamer.conf << EOF
+LD_LIBRARY_PATH=/usr/local/lib/mjpg-streamer
+FRAMERATE=$FRAMERATE
+RESOLUTION=$RESOLUTION
+DEVICE=$DEVICE
+INPUT="\"input_uvc.so -d $DEVICE -f $FRAMERATE -r $RESOLUTION\""
+OUTPUT="\"output_http.so --www /usr/local/share/mjpg-streamer/www\""
+EOF
+
+    systemctl restart mjpg_streamer
+  fi
+}
+
+do_resolution() {
+  FRAMERATE=`grep FRAMERATE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  RESOLUTION=`grep RESOLUTION  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  DEVICE=`grep DEVICE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+
+  RESOLUTION=$(whiptail --inputbox "Enter camera resolution(current=$RESOLUTION)" 20 60 --title "Enter Resolution" 3>&1 1>&2 2>&3)
+  if [ $? -eq 0 ] && [ "$RESOLUTION" != "" ]; then
+
+    cat > /usr/local/etc/mjpg_streamer.conf << EOF
+LD_LIBRARY_PATH=/usr/local/lib/mjpg-streamer
+FRAMERATE=$FRAMERATE
+RESOLUTION=$RESOLUTION
+DEVICE=$DEVICE
+INPUT="\"input_uvc.so -d $DEVICE -f $FRAMERATE -r $RESOLUTION\""
+OUTPUT="\"output_http.so --www /usr/local/share/mjpg-streamer/www\""
+EOF
+
+    systemctl restart mjpg_streamer
+  fi
+}
+
+do_device() {
+  FRAMERATE=`grep FRAMERATE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  RESOLUTION=`grep RESOLUTION  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+  DEVICE=`grep DEVICE  /usr/local/etc/mjpg_streamer.conf | sed -e 's/^.*=//'`
+
+  DEVICE=$(whiptail --inputbox "Enter camera device name(current=$DEVICE)" 20 60 --title "Enter Device" 3>&1 1>&2 2>&3)
+  if [ $? -eq 0 ] && [ "$DEVICE" != "" ]; then
+
+    cat > /usr/local/etc/mjpg_streamer.conf << EOF
+LD_LIBRARY_PATH=/usr/local/lib/mjpg-streamer
+FRAMERATE=$FRAMERATE
+RESOLUTION=$RESOLUTION
+DEVICE=$DEVICE
+INPUT="\"input_uvc.so -d $DEVICE -f $FRAMERATE -r $RESOLUTION\""
+OUTPUT="\"output_http.so --www /usr/local/share/mjpg-streamer/www\""
+EOF
+
+    systemctl restart mjpg_streamer
+  fi
+}
+
+do_camera() {
+  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Camera Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+      "C1 Enable camera" "Enable camera service (mjpg_streamer)" \
+      "C2 Disable camera" "Disable camera service (mjpg_streamer)" \
+      "C3 Frame Rate" "Set Camera Frame Rate" \
+      "C4 Rsolution" "Set Camera Resolution" \
+      "C5 Device" "Set Camera device name" \
+      3>&1 1>&2 2>&3)
+  if [ $? -eq 0 ]; then
+    case "$FUN" in
+      C1*)
+        systemctl enable mjpg_streamer
+	systemctl daemon-reload
+        systemctl start mjpg_streamer
+	whiptail --msgbox "mjpg_streamer service enabled" 20 60 1
+        ;;
+      C2*)
+        systemctl stop mjpg_streamer
+        systemctl disable mjpg_streamer
+	systemctl daemon-reload
+	whiptail --msgbox "mjpg_streamer service disabled" 20 60 1
+        ;;
+      C3*)
+        do_framerate
+        ;;
+      C4*)
+        do_resolution
+        ;;
+      C5*)
+        do_device
+        ;;
+    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+  fi
+}
+
 do_update() {
   FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Update Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
       "U1 Script" "Update just this octobox-setup script" \
@@ -460,8 +535,9 @@ while true; do
   "3 Hostname" "Set network name for this computer" \
   "4 Location and Language" "Set location and language preferences" \
   "5 Change Password" "Change password for user 'ocho'" \
-  "6 Update octobox-setup" "Update this tool to the latest version" \
-  "7 About octobox-setup" "Information about this configuration tool" \
+  "6 Configure Camera" "Enable mjpg_streamer and configure camera" \
+  "7 Update octobox-setup" "Update this tool to the latest version" \
+  "8 About octobox-setup" "Information about this configuration tool" \
   3>&1 1>&2 2>&3)
   RET=$?
   if [ $RET -eq 1 ]; then
@@ -473,8 +549,9 @@ while true; do
       3\ *) do_hostname ;;
       4\ *) do_internationalisation_menu ;;
       5\ *) do_change_pass ;;
-      6\ *) do_update ;;
-      7\ *) do_about ;;
+      6\ *) do_camera ;;
+      7\ *) do_update ;;
+      9\ *) do_about ;;
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   else
