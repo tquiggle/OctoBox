@@ -186,6 +186,11 @@ sub process_config ($) {
         $do_wifi = 0;
     }
 
+    if ($password eq "mypassword" || $ssid eq "mySSID") {
+        syslog(LOG_ERR, "$config_file contains default password or SSID. Skipping...");
+        $do_wifi = 0;
+    }
+
     if ($do_wifi) {
         syslog(LOG_INFO, "Turning WiFi on");
         system ("nmcli radio wifi on");
@@ -241,7 +246,7 @@ sub process_syslog($) {
     my @cols = split /\s+/, $df_out;
     my $free = $cols[3];
     # use up to the last 4K
-    my $log_bytes = $free = 4096;
+    my $log_bytes = $free - 4096;
     my $cmd = "tail --bytes=$free /var/log/syslog > $log_file";
     system($cmd);
 }
