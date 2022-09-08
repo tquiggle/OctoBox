@@ -5,7 +5,7 @@
 
 ASK_TO_REBOOT=0
 CMDLINE=/proc/cmdline
-VERSION=1.0
+VERSION=1.1
 
 export NEWT_COLORS='
 actbutton=black,green
@@ -58,7 +58,7 @@ calc_wt_size() {
 }
 
 do_about() {
-  whiptail  --title "OctoBox Software Configuration Tool (octobox-setup)" --msgbox "\
+  whiptail  --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --msgbox "\
 This tool provides a straightforward way of doing initial
 configuration of the OctoBox.  It can be run at any time
 to revise the configuration.
@@ -138,7 +138,7 @@ get_hostname() {
 }
 
 do_hostname() {
-  whiptail  --title "OctoBox Software Configuration Tool (octobox-setup)" --msgbox "\
+  whiptail  --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --msgbox "\
 Please note: RFCs mandate that a hostname's labels \
 may contain only the ASCII letters 'a' through 'z' (case-insensitive), 
 the digits '0' through '9', and the hyphen.
@@ -146,7 +146,7 @@ Hostname labels cannot begin or end with a hyphen.
 No other symbols, punctuation characters, or blank spaces are permitted.\
 " 20 70 1
   CURRENT_HOSTNAME=`cat /etc/hostname | tr -d " \t\n\r"`
-  NEW_HOSTNAME=$(whiptail  --title "OctoBox Software Configuration Tool (octobox-setup)" --inputbox "Please enter a hostname" 20 60 "$CURRENT_HOSTNAME" 3>&1 1>&2 2>&3)
+  NEW_HOSTNAME=$(whiptail  --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --inputbox "Please enter a hostname" 20 60 "$CURRENT_HOSTNAME" 3>&1 1>&2 2>&3)
   if [ $? -eq 0 ]; then
     echo $NEW_HOSTNAME > /etc/hostname
     sed -i "s/127.0.1.1.*$CURRENT_HOSTNAME/127.0.1.1\t$NEW_HOSTNAME/g" /etc/hosts
@@ -181,7 +181,7 @@ get_autologin() {
 }
 
 do_boot_behaviour() {
-  BOOTOPT=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Boot Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+  BOOTOPT=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Boot Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
       "B1 Console" "Text console, requiring user to login" \
       "B2 Console Autologin" "Text console, automatically logged in as '$USER' user" \
       "B3 Desktop" "Desktop GUI, requiring user to login" \
@@ -260,7 +260,7 @@ get_SSID() {
 
   #rm /tmp/SSIDs.txt
 
-  c="whiptail --title 'OctoBox Software Configuration Tool (octobox-setup)' --menu 'Select Wireless Network' 19 60 10 ${menuArgs[@]} 3>&1 1>&2 2>&3"
+  c="whiptail --title 'OctoBox Software Configuration Tool (octobox-setup $VERSION)' --menu 'Select Wireless Network' 19 60 10 ${menuArgs[@]} 3>&1 1>&2 2>&3"
   eval $c
 }
 
@@ -318,7 +318,7 @@ do_wifi_ssid_passphrase() {
     echo $i
     i=$((i+1))
     if [ "$proc" = "" ]; then break; fi
-  done | whiptail  --title "OctoBox Software Configuration Tool (octobox-setup)" --gauge "Searching for WiFi (% complete is an estimate)" 20 60 10
+  done | whiptail  --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --gauge "Searching for WiFi (% complete is an estimate)" 20 60 10
 
   #TODO: Add checks for failures
   SSID=$(get_SSID)
@@ -404,7 +404,7 @@ do_script_update() {
   fi
   install -C /tmp/octobox-setup /usr/bin/octobox-setup
   whiptail --msgbox "octobox-setup upgraded to version $LATEST_VERSION" 20 60 1
-
+  exec /usr/bin/octobox-setup
 }
 
 do_framerate() {
@@ -471,7 +471,7 @@ EOF
 }
 
 do_camera() {
-  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Camera Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Camera Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
       "C1 Enable camera" "Enable camera service (mjpg_streamer)" \
       "C2 Disable camera" "Disable camera service (mjpg_streamer)" \
       "C3 Frame Rate" "Set Camera Frame Rate" \
@@ -506,7 +506,7 @@ do_camera() {
 }
 
 do_update() {
-  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup)" --menu "Update Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Update Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
       "U1 Script" "Update just this octobox-setup script" \
       "U2 Software" "Update all OctoBox configuration software" \
       3>&1 1>&2 2>&3)
@@ -529,7 +529,7 @@ while [ "$USER" = "root" ] || [ -z "$USER" ]; do
   fi
 done
 while true; do
-    FUN=$(whiptail --title "OctoBox Configuration Tool (octobox-setup)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
+    FUN=$(whiptail --title "OctoBox Configuration Tool (octobox-setup $VERSION)" --menu "Setup Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT --cancel-button Finish --ok-button Select \
   "1 Configure Wireless" "Configure wireless settings" \
   "2 Desktop / Auto Login" "Select boot into desktop or to command line" \
   "3 Hostname" "Set network name for this computer" \
