@@ -44,6 +44,7 @@ Each option is explained in greater detail below.
 <details>
   <summary>Click to expand!</summary>
 
+If you have access to a keyboard, mouse and monitor this is probably the easiest and most foolproof method for configuring wireless.
 Connect a monitor to either the HDMI or Displayport connection on the back of the OctoBox and plug in a USB keyboard and mouse to any
 of the USB ports.  Power on the OctoBox.  It boots into a desktop environment already logged in as user 'ocho'.
 
@@ -103,22 +104,55 @@ To configure Wireless,
   <summary>Click to expand!</summary>
 You can configure wireless access without a terminal and keyboard by temporarily plugging your OctoBox into a wired ethernet connection and accessing it remotely.
 
+For remote access, you will need an ssh client.  
 
-For remote access, you will need an ssh client.  For Windows, I recommend Putty.  You can install the latest Putty client from
-[here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or from the [Microsoft Store](https://apps.microsoft.com/store/detail/putty/XPFNZKSKLBP7RJ).
+#### Windows
+For Windows, I recommend Putty.  You can install the latest Putty client from
+[the official Putty download site](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or from the [Microsoft Store](https://apps.microsoft.com/store/detail/putty/XPFNZKSKLBP7RJ).
 
-Run Putty. Enter "octoprint.local" as in the Host Name input field and click on the "[Open]" button.  
+Once installed, run Putty. Enter "octoprint.local" as in the "Host Name" input field and click on the "[Open]" button.  
 
 ![run putty](screenshots/putty-1.png)
 
-This will bring up a new terminal window.  Log in as user "ocho" using the password from the sticker on the bottom of the Octobox.
+This will bring up a new terminal window. Log in as user "ocho" using the password from the sticker on the bottom of the Octobox.
 
 ![login putty](screenshots/putty-2.png)
 
-Once logged in, enter the command "sudo octobox-setup".  You will be prompted again for the password. It is the same one used to log in (found on the bottom of the
-OctoBox).
+Once logged in, enter the command 
+
+```
+sudo octobox-setup
+```
+
+You will be prompted again for the password. It is the same one used to log in (found on the bottom of the OctoBox).  This will bring up the setup menu.
 
 ![login putty](screenshots/putty-3.png)
+
+Select "1 Configure Wireless"  After a scan, a list of available wireless networks will be displayed (in decreasing order of signal
+strength).  Use the arrow keys to select the wireless network you wish to connect to and click "[Enter]"  You will be prompted for the password.
+
+If your wireless network is not configured to broadcast its SSID, select "Enter Manually" and enter both the SSID and Password.
+
+#### Mac
+
+Mac OS X includes a command-line SSH client as part of the operating system. To use it, goto Finder and selext "Go -> Utilities" from the top menu. Then look for Terminal.
+Terminal can be used to get a local terminal window from which you can create SSH connections to remote servers.
+
+Once you have the Terminal window open type 
+
+```
+ssh ocho@octoprint.local
+```
+
+into the terminal window.  Log in as user "ocho" using the password from the sticker on the bottom of the Octobox.
+
+Once logged in, enter the command 
+
+```
+sudo octobox-setup
+```
+
+You will be prompted again for the password. It is the same one used to log in (found on the bottom of the OctoBox).  This will bring up the setup utility.
 
 This will bring up the setup utility.  Select "1 Configure Wireless"  After a scan, a list of available wireless networks will be displayed (in decreasing order of signal
 strength).  Use the arrow keys to select the wireless network you wish to connect to and click "[Enter]"  You will be prompted for the password.
@@ -146,7 +180,8 @@ password=mypassword
 #desktop=disabled
 ```
 
-replace the string 'mySSID' with the name of your wireless network, and 'mypassword' with the password.  Save the file, eject the flash drive and insert it in any USB port on your OctoBox.  When the system boots, it scans for any attached USB drives (or an SD card) containing the file octobox-config.txt in the top level folder. If found, it applies the options specified in the configuration file.
+replace the string 'mySSID' with the name of your wireless network, and 'mypassword' with the password.  Save the file, eject the flash drive and insert it in any USB port
+on your OctoBox prior to powering on.  When the system boots, it scans for any attached USB drives (or an SD card) containing the file octobox-config.txt in the top level folder. If found, it applies the options specified in the configuration file.
 
 A word about the config file format.  The config parser tries to be agnostic about line terminators.  You can edit the file with Windows, Linux or MacOS.  As a result,
 it does NOT process the config file line-by-line.  If you have a '#' character followed by any amount of whitespace (including line terminators) preceding a config
@@ -221,7 +256,9 @@ There are two accounts on the system.
 
 The user account is 'ocho' and the password is provided on an index card in the box as well as a sticker attached to the bottom of the OctoBox. You can log into this account to run Cura or a web browser to connect to the local Octoprint service.  A desktop shortcut has been installed to launch Firefox with the local OctoPrint URL.
 
-The Octoprint service runs under the account 'octoprint'  This is a system account to run the service.  It does not have login or shell access. Sudo access is restricted to shutting down and rebooting the system.
+The Octoprint service runs under the account 'octoprint'  This is a system account to run the service.  It does not have login or shell access. Sudo access is restricted
+to shutting down and rebooting the system. While I STRONGLY recommend against opening access to port 5000 on your router to allow access to OctoPrint from the internet, at
+least a compromized OctoPrint instance should be unable to obtain root privleges and do damage beyond restarting OctoPrint or rebooting your machine mid-print.
 
 Octoprint was installed in a python venv at /home/octoprint/venv
 
