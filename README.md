@@ -103,8 +103,27 @@ To configure Wireless,
   <summary>Click to expand!</summary>
 You can configure wireless access without a terminal and keyboard by temporarily plugging your OctoBox into a wired ethernet connection and accessing it remotely.
 
+
 For remote access, you will need an ssh client.  For Windows, I recommend Putty.  You can install the latest Putty client from
-[here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html).
+[here](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) or from the [Microsoft Store](https://apps.microsoft.com/store/detail/putty/XPFNZKSKLBP7RJ).
+
+Run Putty. Enter "octoprint.local" as in the Host Name input field and click on the "[Open]" button.  
+
+![run putty](screenshots/putty-1.png)
+
+This will bring up a new terminal window.  Log in as user "ocho" using the password from the sticker on the bottom of the Octobox.
+
+![login putty](screenshots/putty-2.png)
+
+Once logged in, enter the command "sudo octobox-setup".  You will be prompted again for the password. It is the same one used to log in (found on the bottom of the
+OctoBox).
+
+![login putty](screenshots/putty-3.png)
+
+This will bring up the setup utility.  Select "1 Configure Wireless"  After a scan, a list of available wireless networks will be displayed (in decreasing order of signal
+strength).  Use the arrow keys to select the wireless network you wish to connect to and click "[Enter]"  You will be prompted for the password.
+
+If your wireless network is not configured to broadcast its SSID, select "Enter Manually" and enter both the SSID and Password.
 
 </details>
 
