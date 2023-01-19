@@ -19,6 +19,7 @@ an OctoBox from me on eBay here are instructions for configuring your system.
 3. [Configuring OctoPrint](#ConfiguringOctoPrint)
 4. [Other OctoBox Configuration](#OtherConfiguration)
      1. [Disabling the Graphical User Interface](#DisableGUI)
+     2. [Configure Camera](#ConfigureCamera)
 5. [System Details](#SystemDetails)
 
 # Network Configuration <a name="NetworkConfiguration">
@@ -36,7 +37,7 @@ connections.  Simply open a browser and enter "http://octoprint.local:5000"
 To configure your OctoBox to join your wireless network, you have three options: 
 1. connect a keyboard, mouse and monitor to the OctoBox and configure directly,
 2. temporarily connect to a wired network and configure remotely via a terminal application, or 
-3. edit a configuration file on the provided USB flash card and insert it into your OctoBox prior to booting.
+3. edit a configuration file on the provided USB flash drive and insert it into your OctoBox prior to booting.
 
 Each option is explained in greater detail below.
 
@@ -93,7 +94,14 @@ This will run the octobox-setup script.
 
 Navigate between options using arrow keys or the [tab] key.  Pressing [enter] will select the highlighted option.
 
-To configure Wireless, 
+To configure Wireless, highlight option "1 Configure Wireless" and press [enter]. The script will scan for available wireless
+networks and list them in decreasing order fo signal strength.  Use the arrow or [tab] keys to select your wireless network and
+press [enter].  
+
+If your wireless network does not broadcast its SSID, highlight "Enter Manually" and press "enter"  You will be prompted to enter
+the SSID of your network.
+
+After selecting the network, you will be prompted to enter the passphrase.
 
 </details>
 
@@ -241,6 +249,10 @@ The graphical user interface uses few resources when enabled but not in use.  Wh
 average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some
 resources by disabling the graphical user interface. This can be done from the octobox-setup script
 
+## Configure a camera for video<a name="ConfigureCamera">
+
+The OctoBox comes with mjpg_streamer installed but not enabled.  You can enable the service and set the resolution and frame rate
+from the 
 
 ![top](screenshots/top.png)
 
