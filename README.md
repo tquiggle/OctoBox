@@ -1,5 +1,5 @@
 
-# OctoBox <a name="Intro">
+# OctoBox
 An Octoprint print server running on a reimaged ChromeBox
 
 [OctoPi](https://octoprint.org/download/#octopi) is a popular solution for running [OctoPrint](https://octoprint.org/) to control your 3D printer on an inexpensive [Raspberry Pi](https://www.raspberrypi.com/).  With the global chip shortage, Raspberry Pi boards have become virtually unobtainable without paying an exorbitant markup.
@@ -9,32 +9,32 @@ perfect for running OctoPrint.  I've been using this setup with my Ender 3Pro fo
 an OctoBox from me on eBay here are instructions for configuring your system.
 
 # Table of Contents
-1. [OctoBox](#Intro)
-2. [Network Configuration](#NetworkConfiguration)
-    1. [Wired Network](#WiredNetwork)
-    2. [Wireless Network](#WirelessNetwork)
-        1. [Using a Keyboard and Monitor](#KeyboardMonitor)
-           1. [Configure with the Desktop GUI](#DesktopGUI)
+1. [OctoBox](#OctoBox)
+2. [Network Configuration](#network-configuration)
+    1. [Wired Network](#wired-network)
+    2. [Wireless Network](#wireless-network)
+        1. [Using a Keyboard and Monitor](#using-a-keyboard-and-monitor)
+           1. [Configure with the Desktop GUI](#configure-with-the-desktop-gui)
            2. [Configure with octobox-setup](#OctoboxSetup)
         2. [Using a Wired LAN connection](#WiredLAN)
         3. [Using a Thumb Drive](#ThumbDrive)
 3. [Configuring OctoPrint](#ConfiguringOctoPrint)
 4. [Other OctoBox Configuration](#OtherConfiguration)
-     1. [Disabling the Graphical User Interface](#DisableGUI)
-     2. [Configure Camera](#ConfigureCamera)
+     1. [Disabling the Graphical User Interface](#disabling-the-graphical-user-interface)
+     2. [Configure Camera](#configure-a-camera-for-video)
 5. [System Details](#SystemDetails)
 
-# <a name="NetworkConfiguration">Network Configuration 
+# Network Configuration 
 
 The first thing you need to do is connect the OctoBox to your network.
 
-## <a name="WiredNetwork">Wired Network
+## Wired Network
 
 When plugged into a wired network, the OctoBox should self configure via dhcp and come up on your network as 'octoprint.local'  If you have
 a convenient wired network connection near your 3D printer, this is an excellent option as it avoids any issues with spotty wireless
 connections.  Simply open a browser and enter "http://octoprint.local:5000"
 
-## Wireless Network <a name="WirelessNetwork">
+## Wireless Network
 
 To configure your OctoBox to join your wireless network, you have three options: 
 1. connect a keyboard, mouse and monitor to the OctoBox and configure directly,
@@ -43,7 +43,7 @@ To configure your OctoBox to join your wireless network, you have three options:
 
 Each option is explained in greater detail below.
 
-### Using a keyboard and monitor <a name="KeyboardMonitor">
+### Using a keyboard and monitor
 <details>
   <summary>Click to expand!</summary>
 
@@ -53,7 +53,7 @@ of the USB ports.  Power on the OctoBox.  It boots into a desktop environment al
 
 From the desktop, there are two options for enabling wireless.
 
-#### Configure with the Desktop GUI <a name="DesktopGUI">
+#### Configure with the Desktop GUI
 <details>
   <summary>Click to expand!</summary>
 
@@ -68,7 +68,7 @@ Then expand the "Wi-Fi Not Connected" option and click on "Select Network"
 This will bring up a new window where you can select your wireless network and enter the password.
 </details>
 
-#### Configure with octobox-setup <a name="OctoboxSetup">
+#### Configure with octobox-setup
 
 <details>
   <summary>Click to expand!</summary>
@@ -109,7 +109,7 @@ After selecting the network, you will be prompted to enter the passphrase.
 
 </details>
 
-### Using a wired LAN connection <a name="WiredLAN">
+### Using a wired LAN connection
 <details>
   <summary>Click to expand!</summary>
 You can configure wireless access without a terminal and keyboard by temporarily plugging your OctoBox into a wired ethernet connection and accessing it remotely.
@@ -171,7 +171,7 @@ If your wireless network is not configured to broadcast its SSID, select "Enter 
 
 </details>
 
-### Using a USB Thumb Drive <a name="ThumbDrive">
+### Using a USB Thumb Drive
 <details>
   <summary>Click to expand!</summary>
 
@@ -219,7 +219,7 @@ password=mypassword
 
 </details>
 
-# Configuring OctoPrint <a name="ConfiguringOctoPrint">
+# Configuring OctoPrint
 
 Once your OctoBox is connected to your local network, from the browser of your choice enter the destination:
 
@@ -237,13 +237,13 @@ You will be asked to create an account.  This is separate from the user account 
 
 The commands to restart OctoPrint and shut down your OctoBox are pre-configured.  Just leave these settings and click Next.
 
-# Using OctoPrint <a name="UsingOctoPrint">
+# Using OctoPrint
 
 Once you have completed the Setup Wizard, each time you visit octoprint.local:5000 you will get the main OctoPrint screen.  From there you can upload .gcode files and print them.  Do Not leave an SD card in your printer when using OctoPrint!  Doing so will dramatically slow down operations.
 
 ![top](screenshots/octoprint.png)
 
-# Other OctoBox Configuration<a name="OtherConfiguration">
+# Other OctoBox Configuration
 
 The provided octobox-setup script can be used to make other configuration changes.  You can run the setup script by attaching a
 monitor, keyboard and mouse to the OctoBox, or by connecting remotely via ssh.
@@ -255,7 +255,7 @@ Instructions on running via ssh from a networked computer can be found [here](#W
 
 Most configuration settings should be self explanitory.
 
-## Disabling the Graphical User Interface<a name="DisableGUI">
+## Disabling the Graphical User Interface
 
 The graphical user interface uses few resources when enabled but not in use.  When actively printing via OctoPrint with the GUI enabled, the system load
 average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some
@@ -266,12 +266,12 @@ resources by disabling the graphical user interface. This can be done from the o
 Running the OctoPrint client UI in Firefox on the OctoBox while printing utilizes much more resources.  The system load average increases to around 1.75
 and idle CPU drops to about 50%.
 
-## Configure a camera for video<a name="ConfigureCamera">
+## Configure a camera for video
 
 The OctoBox comes with mjpg_streamer installed but not enabled.  You can enable the service and set the resolution and frame rate
 from the octobox-setup script.
 
-# System Details <a name="SystemDetails">
+# System Details
 
 The system comes with Ubuntu 22.04.1 LTS (Jammy Jellyfish) with desktop support and the Cura slicer installed.  By default the graphical user interface is
 enabled. The system will boot into a desktop environment with the user 'ocho' logged in.
