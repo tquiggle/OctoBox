@@ -15,14 +15,15 @@ an OctoBox from me on eBay here are instructions for configuring your system.
     2. [Wireless Network](#wireless-network)
         1. [Using a Keyboard and Monitor](#using-a-keyboard-and-monitor)
            1. [Configure with the Desktop GUI](#configure-with-the-desktop-gui)
-           2. [Configure with octobox-setup](#OctoboxSetup)
-        2. [Using a Wired LAN connection](#WiredLAN)
-        3. [Using a Thumb Drive](#ThumbDrive)
-3. [Configuring OctoPrint](#ConfiguringOctoPrint)
-4. [Other OctoBox Configuration](#OtherConfiguration)
+           2. [Configure with octobox-setup](#configure-with-octobox-setup)
+        2. [Using a Wired LAN connection](#using-a-wired-lan-connection)
+        3. [Using a Thumb Drive](#using-a-usb-thumb-drive)
+3. [Configuring OctoPrint](#configuring-octoprint)
+4. [Using OctoPrint](#using-octoprint)
+5. [Other OctoBox Configuration](#other-octobox-configuration)
      1. [Disabling the Graphical User Interface](#disabling-the-graphical-user-interface)
      2. [Configure Camera](#configure-a-camera-for-video)
-5. [System Details](#SystemDetails)
+6. [System Details](#system-details)
 
 # Network Configuration 
 
