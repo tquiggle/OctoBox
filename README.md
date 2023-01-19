@@ -21,8 +21,8 @@ an OctoBox from me on eBay here are instructions for configuring your system.
 3. [Configuring OctoPrint](#configuring-octoprint)
 4. [Using OctoPrint](#using-octoprint)
 5. [Other OctoBox Configuration](#other-octobox-configuration)
-     1. [Disabling the Graphical User Interface](#disabling-the-graphical-user-interface)
-     2. [Configure Camera](#configure-a-camera-for-video)
+     1. [Configure Camera](#configure-a-camera-for-video)
+     2. [Disabling the Graphical User Interface](#disabling-the-graphical-user-interface)
 6. [System Details](#system-details)
 
 # Network Configuration 
@@ -250,27 +250,27 @@ The provided octobox-setup script can be used to make other configuration change
 monitor, keyboard and mouse to the OctoBox, or by connecting remotely via ssh.
 
 Instructions on running octobox-setup from the graphical user interface with a monitor, keyboard and mouse can be found
-[here](#OctoboxSetup)
+[here](#configure-with-octobox-setup)
 
-Instructions on running via ssh from a networked computer can be found [here](#WiredLAN)
+Instructions on running via ssh from a networked computer can be found [here](#using-a-wired-lan-connection)
 
 Most configuration settings should be self explanitory.
-
-## Disabling the Graphical User Interface
-
-The graphical user interface uses few resources when enabled but not in use.  When actively printing via OctoPrint with the GUI enabled, the system load
-average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some
-resources by disabling the graphical user interface. This can be done from the octobox-setup script
-
-![top](screenshots/top.png)
-
-Running the OctoPrint client UI in Firefox on the OctoBox while printing utilizes much more resources.  The system load average increases to around 1.75
-and idle CPU drops to about 50%.
 
 ## Configure a camera for video
 
 The OctoBox comes with mjpg_streamer installed but not enabled.  You can enable the service and set the resolution and frame rate
 from the octobox-setup script.
+
+From within the octobox-setup menu, select "6 Configure Camera"
+
+## Disabling the Graphical User Interface
+
+The graphical user interface uses few resources when enabled but not in use.  When actively printing via OctoPrint with the GUI enabled, the system load average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some resources by disabling the graphical user interface. This can be done from the octobox-setup script
+
+![top](screenshots/top.png)
+
+Running the OctoPrint client UI in Firefox on the OctoBox while printing utilizes much more resources.  The system load average increases to around 1.75 and idle CPU drops to about 50%.
+
 
 # System Details
 
