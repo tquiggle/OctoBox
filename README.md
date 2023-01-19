@@ -14,7 +14,9 @@ an OctoBox from me on eBay here are instructions for configuring your system.
     1. [Wired Network](#WiredNetwork)
     2. [Wireless Network](#WirelessNetwork)
         1. [Using a Keyboard and Monitor](#KeyboardMonitor)
-        2. [Configuring using the Desktop GUI](#DesktopGUI)
+           1. [Configure with the Desktop GUI](#DesktopGUI)
+           2. [Configure with octobox-setup](#OctoboxSetup)
+        2. [Using a Wired LAN connection](#WiredLAN)
         3. [Using a Thumb Drive](#ThumbDrive)
 3. [Configuring OctoPrint](#ConfiguringOctoPrint)
 4. [Other OctoBox Configuration](#OtherConfiguration)
@@ -51,7 +53,7 @@ of the USB ports.  Power on the OctoBox.  It boots into a desktop environment al
 
 From the desktop, there are two options for enabling wireless.
 
-#### Configure using the Desktop GUI
+#### Configure with the Desktop GUI <a name="DesktopGUI">
 <details>
   <summary>Click to expand!</summary>
 
@@ -66,7 +68,7 @@ Then expand the "Wi-Fi Not Connected" option and click on "Select Network"
 This will bring up a new window where you can select your wireless network and enter the password.
 </details>
 
-#### Configure using octobox-setup
+#### Configure with octobox-setup <a name="OctoboxSetup">
 
 <details>
   <summary>Click to expand!</summary>
@@ -107,7 +109,7 @@ After selecting the network, you will be prompted to enter the passphrase.
 
 </details>
 
-### Using a wired LAN connection and ssh
+### Using a wired LAN connection <a name="WiredLAN">
 <details>
   <summary>Click to expand!</summary>
 You can configure wireless access without a terminal and keyboard by temporarily plugging your OctoBox into a wired ethernet connection and accessing it remotely.
@@ -243,21 +245,31 @@ Once you have completed the Setup Wizard, each time you visit octoprint.local:50
 
 # Other OctoBox Configuration<a name="OtherConfiguration">
 
+The provided octobox-setup script can be used to make other configuration changes.  You can run the setup script by attaching a
+monitor, keyboard and mouse to the OctoBox, or by connecting remotely via ssh.
+
+Instructions on running octobox-setup from the graphical user interface with a monitor, keyboard and mouse can be found
+[here](#OctoboxSetup)
+
+Instructions on running via ssh from a networked computer can be found [here](#WiredLAN)
+
+Most configuration settings should be self explanitory.
+
 ## Disabling the Graphical User Interface<a name="DisableGUI">
 
 The graphical user interface uses few resources when enabled but not in use.  When actively printing via OctoPrint with the GUI enabled, the system load
 average is less than 0.1 and the CPU is around 98% idle. If you never intend to connect your OctoBox to a keyboard and mouse, you can save some
 resources by disabling the graphical user interface. This can be done from the octobox-setup script
 
-## Configure a camera for video<a name="ConfigureCamera">
-
-The OctoBox comes with mjpg_streamer installed but not enabled.  You can enable the service and set the resolution and frame rate
-from the 
-
 ![top](screenshots/top.png)
 
 Running the OctoPrint client UI in Firefox on the OctoBox while printing utilizes much more resources.  The system load average increases to around 1.75
 and idle CPU drops to about 50%.
+
+## Configure a camera for video<a name="ConfigureCamera">
+
+The OctoBox comes with mjpg_streamer installed but not enabled.  You can enable the service and set the resolution and frame rate
+from the octobox-setup script.
 
 # System Details <a name="SystemDetails">
 
