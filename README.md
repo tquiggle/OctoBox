@@ -24,11 +24,11 @@ an OctoBox from me on eBay here are instructions for configuring your system.
      2. [Configure Camera](#ConfigureCamera)
 5. [System Details](#SystemDetails)
 
-# Network Configuration <a name="NetworkConfiguration">
+# <a name="NetworkConfiguration">Network Configuration 
 
 The first thing you need to do is connect the OctoBox to your network.
 
-## Wired Network <a name="WiredNetwork">
+## <a name="WiredNetwork">Wired Network
 
 When plugged into a wired network, the OctoBox should self configure via dhcp and come up on your network as 'octoprint.local'  If you have
 a convenient wired network connection near your 3D printer, this is an excellent option as it avoids any issues with spotty wireless
