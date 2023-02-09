@@ -5,7 +5,7 @@
 
 ASK_TO_REBOOT=0
 CMDLINE=/proc/cmdline
-VERSION=1.2
+VERSION=1.3
 
 export NEWT_COLORS='
 actbutton=black,green
@@ -438,38 +438,42 @@ EOF
 }
 
 do_camera() {
-  FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Camera Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
-      "C1 Enable camera" "Enable camera service (mjpg_streamer)" \
-      "C2 Disable camera" "Disable camera service (mjpg_streamer)" \
-      "C3 Frame Rate" "Set Camera Frame Rate" \
-      "C4 Rsolution" "Set Camera Resolution" \
-      "C5 Device" "Set Camera device name" \
-      3>&1 1>&2 2>&3)
-  if [ $? -eq 0 ]; then
-    case "$FUN" in
-      C1*)
-        systemctl enable mjpg_streamer
-	systemctl daemon-reload
-        systemctl start mjpg_streamer
-	whiptail --msgbox "mjpg_streamer service enabled" 20 60 1
-        ;;
-      C2*)
-        systemctl stop mjpg_streamer
-        systemctl disable mjpg_streamer
-	systemctl daemon-reload
-	whiptail --msgbox "mjpg_streamer service disabled" 20 60 1
-        ;;
-      C3*)
-        do_framerate
-        ;;
-      C4*)
-        do_resolution
-        ;;
-      C5*)
-        do_device
-        ;;
-    esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
-  fi
+  while true; do
+    FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Camera Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+        "C1 Enable camera" "Enable camera service (mjpg_streamer)" \
+        "C2 Disable camera" "Disable camera service (mjpg_streamer)" \
+        "C3 Frame Rate" "Set Camera Frame Rate" \
+        "C4 Rsolution" "Set Camera Resolution" \
+        "C5 Device" "Set Camera device name" \
+        3>&1 1>&2 2>&3)
+    if [ $? -eq 0 ]; then
+      case "$FUN" in
+        C1*)
+          systemctl enable mjpg_streamer
+          systemctl daemon-reload
+          systemctl start mjpg_streamer
+          whiptail --msgbox "mjpg_streamer service enabled" 20 60 1
+          ;;
+        C2*)
+          systemctl stop mjpg_streamer
+          systemctl disable mjpg_streamer
+          systemctl daemon-reload
+          whiptail --msgbox "mjpg_streamer service disabled" 20 60 1
+          ;;
+        C3*)
+          do_framerate
+          ;;
+        C4*)
+          do_resolution
+          ;;
+        C5*)
+          do_device
+          ;;
+      esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+    else
+      break
+    fi
+  done
 }
 
 do_update() {
