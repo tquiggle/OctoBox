@@ -2,3 +2,4 @@ Version Description
 1.0     Initial OctoBox release
 1.1     Added webcam support and ability to update OctoBox scripts
 1.2     Fixed "About" option in octobox-setup
+1.3     Camera submenus now return back to Camera menu rather than top
