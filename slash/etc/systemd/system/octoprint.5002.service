@@ -1,0 +1,15 @@
+[Unit]
+Description=The snappy web interface for your 3D printer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Environment="LC_ALL=C.UTF-8"
+Environment="LANG=C.UTF-8"
+Environment="PORT=5002"
+Type=exec
+User=octoprint
+ExecStart=/home/octoprint/venv/bin/octoprint serve --host=${HOST} --port=${PORT} --config /home/octoprint/.octoprint5002/config.yaml --basedir /home/octoprint/.octoprint5002/
+
+[Install]
+WantedBy=multi-user.target

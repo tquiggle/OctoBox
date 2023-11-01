@@ -1,0 +1,13 @@
+[Unit]
+Description=A Linux-UVC streaming application with Pan/Tilt
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=webcam
+EnvironmentFile=/usr/local/etc/mjpg_streamer.conf
+ExecStart=/usr/local/bin/mjpg_streamer --input $INPUT --output $OUTPUT
+
+[Install]
+WantedBy=multi-user.target
