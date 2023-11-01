@@ -5,7 +5,10 @@
 
 ASK_TO_REBOOT=0
 CMDLINE=/proc/cmdline
-VERSION=1.3
+VERSION=1.4
+OCTOUSER=octoprint
+OCTOHOME=/home/$OCTOUSER
+OCTOEXEC=/home/$OCTOUSER/venv/bin/octoprint
 
 export NEWT_COLORS='
 actbutton=black,green
@@ -476,6 +479,71 @@ do_camera() {
   done
 }
 
+do_multi_printer() {
+  while true; do
+    FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Multiple Printers" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
+        "M1 Enable Printer 1" "Enable Octoprint on port 5001" \
+        "M2 Enable printer 2" "Enable Octoprint on port 5002" \
+        "M3 Enable printer 3" "Enable Octoprint on port 5003" \
+        "M4 Disable Printer 1" "Disable Octoprint on port 5001" \
+        "M5 Disable printer 2" "Disable Octoprint on port 5002" \
+        "M6 Disable printer 3" "Disable Octoprint on port 5003" \
+        3>&1 1>&2 2>&3)
+    if [ $? -eq 0 ]; then
+      case "$FUN" in
+        M1*)
+          PORT=5001
+          ;;
+        M2*)
+          PORT=5002
+          ;;
+        M3*)
+          PORT=5003
+          ;;
+        M4*)
+          DISABLE=1
+          PORT=5001
+          ;;
+        M5*)
+          DISABLE=1
+          PORT=5002
+          ;;
+        M6*)
+          DISABLE=1
+          PORT=5003
+          ;;
+
+      esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
+        BASE=$OCTOHOME/.octoprint$PORT
+        INSTANCE=octoprint.$PORT
+        if [ $DISABLE -eq "1" ]; then
+          echo "DISABLING INSTANCE=$INSTANCE"
+          systemctl stop $INSTANCE
+          systemctl disable $INSTANCE
+        else
+          echo "ENABLING INSTANCE=$INSTANCE"
+          if [ ! -d "/home/octoprint/.octoprint5001" ]; then
+            # uniquify logic courtesy of paukstelis's excelent octoprint_deploy script
+            # (https://github.com/paukstelis/octoprint_deploy)
+            cp -a /home/octoprint/.octoprint  /home/octoprint/.octoprint5001
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set appearance.name $INSTANCE
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set server.commands.serverRestartCommand "sudo systemctl restart $INSTANCE"
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set server.commands.systemRestartCommand "sudo reboot"
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set plugins.discovery.upnpUuid $(uuidgen)
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set plugins.errortracking.unique_id $(uuidgen)
+            sudo -u $OCTOUSER $OCTOEXEC --basedir $BASE config set plugins.tracking.unique_id $(uuidgen)
+            #sudo -u $user $OCTOEXEC --basedir $BASE config set serial.port /dev/octo_$INSTANCE
+          fi
+          systemctl daemon-reload
+          systemctl enable $INSTANCE
+          systemctl start $INSTANCE
+        fi
+    else
+      break
+    fi
+  done
+}
+
 do_update() {
   FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Update Options" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
       "U1 Script" "Update just this octobox-setup script" \
@@ -507,8 +575,9 @@ while true; do
   "4 Location and Language" "Set location and language preferences" \
   "5 Change Password" "Change password for user 'ocho'" \
   "6 Configure Camera" "Enable mjpg_streamer and configure camera" \
-  "7 Update octobox-setup" "Update this tool to the latest version" \
-  "8 About octobox-setup" "Information about this configuration tool" \
+  "7 Multiple Printers" "Start or Stop multiple OctoPrint instances for additional printers" \
+  "8 Update octobox-setup" "Update this tool to the latest version" \
+  "9 About octobox-setup" "Information about this configuration tool" \
   3>&1 1>&2 2>&3)
   RET=$?
   if [ $RET -eq 1 ]; then
@@ -521,8 +590,9 @@ while true; do
       4\ *) do_internationalisation_menu ;;
       5\ *) do_change_pass ;;
       6\ *) do_camera ;;
-      7\ *) do_update ;;
-      8\ *) do_about ;;
+      7\ *) do_multi_printer ;;
+      8\ *) do_update ;;
+      9\ *) do_about ;;
       *) whiptail --msgbox "Programmer error: unrecognized option" 20 60 1 ;;
     esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
   else
