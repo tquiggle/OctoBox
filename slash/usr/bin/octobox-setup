@@ -480,6 +480,7 @@ do_camera() {
 }
 
 do_multi_printer() {
+  DISABLE=0
   while true; do
     FUN=$(whiptail --title "OctoBox Software Configuration Tool (octobox-setup $VERSION)" --menu "Multiple Printers" $WT_HEIGHT $WT_WIDTH $WT_MENU_HEIGHT \
         "M1 Enable Printer 1" "Enable Octoprint on port 5001" \
@@ -514,7 +515,7 @@ do_multi_printer() {
           ;;
 
       esac || whiptail --msgbox "There was an error running option $FUN" 20 60 1
-        BASE=$OCTOHOME/.octoprint$PORT
+        BASE=$OCTOHOME/.octoprint.$PORT
         INSTANCE=octoprint.$PORT
         if [ $DISABLE -eq "1" ]; then
           echo "DISABLING INSTANCE=$INSTANCE"

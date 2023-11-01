@@ -9,7 +9,7 @@ Environment="LANG=C.UTF-8"
 Environment="PORT=5002"
 Type=exec
 User=octoprint
-ExecStart=/home/octoprint/venv/bin/octoprint serve --host=${HOST} --port=${PORT} --config /home/octoprint/.octoprint5002/config.yaml --basedir /home/octoprint/.octoprint5002/
+ExecStart=/home/octoprint/venv/bin/octoprint serve --host=${HOST} --port=${PORT} --config /home/octoprint/.octoprint.5002/config.yaml --basedir /home/octoprint/.octoprint.5002/
 
 [Install]
 WantedBy=multi-user.target
